@@ -437,13 +437,16 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
-# Wallpapers Pack (Default Studio Ghibli + Anime Collection + Pristine Upstream InfinityX)
+# Wallpapers Pack (LOTM + RI + TGED Collection + Pristine Upstream InfinityX)
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_00_ghibli_meadow_default.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_00_ghibli_meadow_default.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_01_cyberpunk_neon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_01_cyberpunk_neon.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_02_cyberpunk_alley.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_02_cyberpunk_alley.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_03_clouds_sky.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_03_clouds_sky.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_04_rain_umbrella.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_04_rain_umbrella.jpg \
-    $(LOCAL_PATH)/wallpapers/anime_05_aesthetic_dress.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_05_aesthetic_dress.jpg
+    $(LOCAL_PATH)/wallpapers/lotm_01_the_fool.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_01_the_fool.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_02_crimson_moon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_02_crimson_moon.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_01_fang_yuan_perseverance.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_01_fang_yuan_perseverance.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_02_treasure_lotus.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_02_treasure_lotus.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_03_fang_yuan_forest.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_03_fang_yuan_forest.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_01_lloyd_scheming_face.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_01_lloyd_scheming_face.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_02_lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_02_lloyd_frontera.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_03_javier_asrahan.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_03_javier_asrahan.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_04_estate_developer.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_04_estate_developer.jpg
 
