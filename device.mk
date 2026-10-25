@@ -442,6 +442,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
     $(LOCAL_PATH)/wallpapers/lotm_01_the_fool.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_01_the_fool.jpg \
     $(LOCAL_PATH)/wallpapers/lotm_02_crimson_moon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_02_crimson_moon.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_03_clown_hk.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_03_clown_hk.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_04_clown_klein.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_04_clown_klein.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_05_clown_time_archive.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_05_clown_time_archive.jpg \
     $(LOCAL_PATH)/wallpapers/ri_01_fang_yuan_perseverance.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_01_fang_yuan_perseverance.jpg \
     $(LOCAL_PATH)/wallpapers/ri_02_treasure_lotus.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_02_treasure_lotus.jpg \
     $(LOCAL_PATH)/wallpapers/ri_03_fang_yuan_forest.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_03_fang_yuan_forest.jpg \
