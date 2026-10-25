@@ -291,4 +291,7 @@
     <!-- Whether WM DisplayContent supports high performance transitions
          (lower-end devices may want to disable) -->
     <bool name="config_deviceSupportsHighPerfTransitions">false</bool>
+
+    <!-- Distinct default lock wallpaper -->
+    <item name="default_lock_wallpaper" type="drawable">@drawable/default_lock_wallpaper</item>
 </resources>

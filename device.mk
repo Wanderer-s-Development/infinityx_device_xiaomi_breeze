@@ -438,6 +438,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
 # Wallpapers Pack (On-Device Wallpapers)
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.config.lock_wallpaper=/product/media/wallpapers/golden_hour_peace.jpg
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper_small.jpg \
@@ -448,7 +451,5 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera.jpg \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera_small.jpg \
     $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg \
-    $(LOCAL_PATH)/wallpapers/merlin_hermes_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes_small.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama_small.jpg
+    $(LOCAL_PATH)/wallpapers/merlin_hermes_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes_small.jpg
 
