@@ -440,18 +440,17 @@ PRODUCT_COPY_FILES += \
 # Wallpapers Pack (LOTM + RI + TGED Collection + Pristine Upstream InfinityX)
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_01_the_fool_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_01_the_fool_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_02_clown_cards_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_02_clown_cards_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_03_clown_persona_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_03_clown_persona_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_04_crimson_moon_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_04_crimson_moon_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_05_mystic_study_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_05_mystic_study_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_06_klein_gentleman_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_06_klein_gentleman_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_01_fang_yuan_demonic_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_01_fang_yuan_demonic_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_02_fang_yuan_perseverance_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_02_fang_yuan_perseverance_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_03_sovereign_immortal_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_03_sovereign_immortal_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_04_bai_ning_bing_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_04_bai_ning_bing_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_01_lloyd_scheming_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_01_lloyd_scheming_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_02_lloyd_demonic_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_02_lloyd_demonic_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_03_lloyd_estate_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_03_lloyd_estate_ai.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_04_lloyd_javier_ai.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_04_lloyd_javier_ai.jpg
+    $(LOCAL_PATH)/wallpapers/lotm_01_the_fool.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_01_the_fool.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_02_donghua_poster.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_02_donghua_poster.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_03_crimson_moon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_03_crimson_moon.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_04_the_clown_hk.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_04_the_clown_hk.jpg \
+    $(LOCAL_PATH)/wallpapers/lotm_05_the_clown_archive.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_05_the_clown_archive.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_01_fang_yuan_perseverance.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_01_fang_yuan_perseverance.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_02_treasure_lotus.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_02_treasure_lotus.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_03_fang_yuan_forest.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_03_fang_yuan_forest.jpg \
+    $(LOCAL_PATH)/wallpapers/ri_04_qing_mao_mountain.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_04_qing_mao_mountain.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_01_lloyd_scheming_face.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_01_lloyd_scheming_face.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_02_lloyd_demonic_face.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_02_lloyd_demonic_face.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_03_lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_03_lloyd_frontera.jpg \
+    $(LOCAL_PATH)/wallpapers/tged_04_estate_developer.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_04_estate_developer.jpg
 
