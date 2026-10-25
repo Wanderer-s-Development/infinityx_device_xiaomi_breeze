@@ -437,8 +437,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
-# Anime Wallpapers Pack
+# Wallpapers Pack (Default Studio Ghibli + Anime Collection + Pristine Upstream InfinityX)
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
     $(LOCAL_PATH)/wallpapers/anime_00_ghibli_meadow_default.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_00_ghibli_meadow_default.jpg \
     $(LOCAL_PATH)/wallpapers/anime_01_cyberpunk_neon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_01_cyberpunk_neon.jpg \
     $(LOCAL_PATH)/wallpapers/anime_02_cyberpunk_alley.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_02_cyberpunk_alley.jpg \
