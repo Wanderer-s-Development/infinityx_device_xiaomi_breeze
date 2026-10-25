@@ -36,7 +36,7 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 # A/B
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
-    POSTINSTALL_PATH_system=system/bin/otapreopt_script \
+    POSTINSTALL_PATH_system=system/bin/backuptool_postinstall.sh \
     FILESYSTEM_TYPE_system=ext4 \
     POSTINSTALL_OPTIONAL_system=true
 
@@ -315,6 +315,9 @@ PRODUCT_COPY_FILES += \
 # SHIPPING API
 PRODUCT_SHIPPING_API_LEVEL := 34
 
+# VINTF
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
@@ -323,7 +326,12 @@ PRODUCT_SOONG_NAMESPACES += \
 # System properties
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/properties/sku/build_breeze_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_in_pa.prop \
-    $(LOCAL_PATH)/configs/properties/sku/build_breeze_p_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_p_in_pa.prop
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_in.prop \
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_cn_pa.prop \
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_cn.prop \
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze.prop \
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_p_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_p_in_pa.prop \
+    $(LOCAL_PATH)/configs/properties/sku/build_breeze_p_in_pa.prop:$(TARGET_COPY_OUT_ODM)/etc/build_breeze_p_in.prop
 
 # Telephony
 PRODUCT_PACKAGES += \

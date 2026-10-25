@@ -26,6 +26,7 @@ AB_OTA_PARTITIONS += \
     vendor_dlkm
 
 # Architecture
+BUILD_BROKEN_PREBUILT_ELF_FILES := true
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a-branchprot
 TARGET_CPU_ABI := arm64-v8a

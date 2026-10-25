@@ -23,3 +23,9 @@ bluetooth.profile.pbap.server.enabled=true
 remote_provisioning.enable_rkpd=true
 remote_provisioning.hostname=remoteprovisioning.googleapis.com
 remote_provisioning.strongbox.rkp_only=true
+
+# Device Specs for Infinity-X Dashboard
+ro.infinity.soc=Snapdragon® 4 Gen 2 AE
+ro.infinity.battery=5030 mAh
+ro.infinity.display=6.79" FHD+ 120Hz LCD
+ro.infinity.camera=108 MP Dual Camera

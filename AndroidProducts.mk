@@ -5,4 +5,8 @@
 #
 
 PRODUCT_MAKEFILES := \
+    $(LOCAL_DIR)/infinity_breeze.mk \
     $(LOCAL_DIR)/lineage_breeze.mk
+
+COMMON_LUNCH_CHOICES := \
+    infinity_breeze-user
