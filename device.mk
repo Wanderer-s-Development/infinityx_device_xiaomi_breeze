@@ -443,15 +443,9 @@ PRODUCT_PRODUCT_PROPERTIES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
-    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper_small.jpg \
     $(LOCAL_PATH)/wallpapers/golden_hour_peace.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/golden_hour_peace.jpg \
-    $(LOCAL_PATH)/wallpapers/golden_hour_peace_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/golden_hour_peace_small.jpg \
     $(LOCAL_PATH)/wallpapers/mai_and_type74.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/mai_and_type74.jpg \
-    $(LOCAL_PATH)/wallpapers/mai_and_type74_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/mai_and_type74_small.jpg \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_frontera_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera_small.jpg \
     $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg \
-    $(LOCAL_PATH)/wallpapers/merlin_hermes_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes_small.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama_small.jpg
+    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama.jpg
 
