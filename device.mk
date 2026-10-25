@@ -437,7 +437,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
-# Wallpapers Pack (Pristine Upstream InfinityX)
+# Wallpapers Pack (On-Device Wallpapers)
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg
+    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
+    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper_small.jpg \
+    $(LOCAL_PATH)/wallpapers/golden_hour_peace.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/golden_hour_peace.jpg \
+    $(LOCAL_PATH)/wallpapers/golden_hour_peace_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/golden_hour_peace_small.jpg
 
