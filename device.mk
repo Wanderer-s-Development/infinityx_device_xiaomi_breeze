@@ -436,3 +436,12 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
+
+# Anime Wallpapers Pack
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wallpapers/anime_01_cyberpunk_neon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_01_cyberpunk_neon.jpg \
+    $(LOCAL_PATH)/wallpapers/anime_02_cyberpunk_alley.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_02_cyberpunk_alley.jpg \
+    $(LOCAL_PATH)/wallpapers/anime_03_clouds_sky.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_03_clouds_sky.jpg \
+    $(LOCAL_PATH)/wallpapers/anime_04_rain_umbrella.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_04_rain_umbrella.jpg \
+    $(LOCAL_PATH)/wallpapers/anime_05_aesthetic_dress.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_05_aesthetic_dress.jpg
+
