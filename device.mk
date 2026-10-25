@@ -439,6 +439,7 @@ PRODUCT_COPY_FILES += \
 
 # Anime Wallpapers Pack
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wallpapers/anime_00_ghibli_meadow_default.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_00_ghibli_meadow_default.jpg \
     $(LOCAL_PATH)/wallpapers/anime_01_cyberpunk_neon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_01_cyberpunk_neon.jpg \
     $(LOCAL_PATH)/wallpapers/anime_02_cyberpunk_alley.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_02_cyberpunk_alley.jpg \
     $(LOCAL_PATH)/wallpapers/anime_03_clouds_sky.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/anime_03_clouds_sky.jpg \
