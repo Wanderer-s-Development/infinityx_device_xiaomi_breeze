@@ -437,20 +437,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
 
-# Wallpapers Pack (LOTM + RI + TGED Collection + Pristine Upstream InfinityX)
+# Wallpapers Pack (Pristine Upstream InfinityX)
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_01_the_fool.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_01_the_fool.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_02_donghua_poster.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_02_donghua_poster.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_03_crimson_moon.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_03_crimson_moon.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_04_the_clown_hk.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_04_the_clown_hk.jpg \
-    $(LOCAL_PATH)/wallpapers/lotm_05_the_clown_archive.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lotm_05_the_clown_archive.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_01_fang_yuan_perseverance.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_01_fang_yuan_perseverance.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_02_treasure_lotus.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_02_treasure_lotus.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_03_fang_yuan_forest.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_03_fang_yuan_forest.jpg \
-    $(LOCAL_PATH)/wallpapers/ri_04_qing_mao_mountain.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/ri_04_qing_mao_mountain.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_01_lloyd_scheming_face.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_01_lloyd_scheming_face.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_02_lloyd_demonic_face.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_02_lloyd_demonic_face.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_03_lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_03_lloyd_frontera.jpg \
-    $(LOCAL_PATH)/wallpapers/tged_04_estate_developer.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/tged_04_estate_developer.jpg
+    $(LOCAL_PATH)/wallpapers/upstream_infinity_wallpaper.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/upstream_infinity_wallpaper.jpg
 
