@@ -446,5 +446,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/mai_and_type74.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/mai_and_type74.jpg \
     $(LOCAL_PATH)/wallpapers/mai_and_type74_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/mai_and_type74_small.jpg \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_frontera_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera_small.jpg
+    $(LOCAL_PATH)/wallpapers/lloyd_frontera_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera_small.jpg \
+    $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg \
+    $(LOCAL_PATH)/wallpapers/merlin_hermes_small.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes_small.jpg
 
