@@ -158,8 +158,8 @@
     <bool name="config_dozePulsePickup">true</bool>
 
     <!-- Power Management: Specifies whether to decouple the auto-suspend state of the
-         device from the display on/off state. Set to false for LCD panels to eliminate backlight blinking. -->
-    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">false</bool>
+         device from the display on/off state. -->
+    <bool name="config_powerDecoupleAutoSuspendModeFromDisplay">true</bool>
 
     <!-- Whether the display blanks itself when transitioning from a doze to a non-doze state -->
     <bool name="config_displayBlanksAfterDoze">false</bool>
@@ -292,6 +292,4 @@
          (lower-end devices may want to disable) -->
     <bool name="config_deviceSupportsHighPerfTransitions">false</bool>
 
-    <!-- Distinct default lock wallpaper -->
-    <item name="default_lock_wallpaper" type="drawable">@drawable/default_lock_wallpaper</item>
 </resources>
