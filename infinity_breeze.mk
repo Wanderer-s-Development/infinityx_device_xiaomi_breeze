@@ -18,8 +18,8 @@ BUILD_USERNAME := Wanderer
 INFINITY_BUILD_TYPE := RELEASE
 LINEAGE_BUILDTYPE := RELEASE
 
-# Always build Vanilla (no GApps)
-WITH_GAPPS := false
+# Default to Vanilla if not specified
+WITH_GAPPS ?= false
 
 # Inherit common infinity configurations
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
