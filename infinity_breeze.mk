@@ -19,7 +19,7 @@ INFINITY_BUILD_TYPE := RELEASE
 LINEAGE_BUILDTYPE := RELEASE
 
 # Default to Vanilla if not specified
-WITH_GAPPS ?= false
+WITH_GAPPS := true
 
 # Inherit common infinity configurations
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
