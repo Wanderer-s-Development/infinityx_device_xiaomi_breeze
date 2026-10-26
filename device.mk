@@ -446,6 +446,5 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/golden_hour_peace.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/golden_hour_peace.jpg \
     $(LOCAL_PATH)/wallpapers/mai_and_type74.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/mai_and_type74.jpg \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera.jpg \
-    $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg \
-    $(LOCAL_PATH)/wallpapers/lloyd_estate_panorama.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_estate_panorama.jpg
+    $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg
 
