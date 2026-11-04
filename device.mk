@@ -229,6 +229,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/usr/keylayout/uinput-fpc.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/uinput-fpc.kl \
     $(LOCAL_PATH)/configs/usr/keylayout/uinput-goodix.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/uinput-goodix.kl
 
+# Recovery Touch Firmware
+PRODUCT_COPY_FILES += \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/novatek_ts_fw.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/novatek_ts_mp.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/novatek_ts_fw.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/novatek_ts_mp.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/focaltech_ts_fw_huaxing.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/focaltech_mp_fw_huaxin.ini \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/focaltech_ts_fw_huaxing.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/focaltech_mp_fw_huaxin.ini
+
 # IPACM
 PRODUCT_PACKAGES += \
     ipacm \
