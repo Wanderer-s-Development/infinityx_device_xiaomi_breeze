@@ -235,10 +235,18 @@ PRODUCT_COPY_FILES += \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/novatek_ts_mp.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/novatek_ts_fw.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/novatek_ts_mp.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/novatek_ts_fw.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/novatek_ts_mp.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/novatek_ts_fw.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/novatek_ts_mp.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/focaltech_ts_fw_huaxing.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/focaltech_mp_fw_huaxin.ini \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/focaltech_ts_fw_huaxing.bin \
-    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/focaltech_mp_fw_huaxin.ini
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/focaltech_mp_fw_huaxin.ini \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/focaltech_ts_fw_huaxing.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/focaltech_mp_fw_huaxin.ini \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/focaltech_ts_fw_huaxing.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/focaltech_mp_fw_huaxin.ini
 
 # IPACM
 PRODUCT_PACKAGES += \

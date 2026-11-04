@@ -25,6 +25,13 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+on early-init
+    mkdir /lib/firmware 0755 root root
+    symlink /vendor/firmware/novatek_ts_fw.bin /lib/firmware/novatek_ts_fw.bin
+    symlink /vendor/firmware/novatek_ts_mp.bin /lib/firmware/novatek_ts_mp.bin
+    symlink /vendor/firmware/focaltech_ts_fw_huaxing.bin /lib/firmware/focaltech_ts_fw_huaxing.bin
+    symlink /vendor/firmware/focaltech_mp_fw_huaxin.ini /lib/firmware/focaltech_mp_fw_huaxin.ini
+
 on init
     write /sys/class/backlight/panel0-backlight/brightness 200
     setprop sys.usb.configfs 1
