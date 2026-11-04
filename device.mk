@@ -448,3 +448,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wallpapers/lloyd_frontera.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/lloyd_frontera.jpg \
     $(LOCAL_PATH)/wallpapers/merlin_hermes.jpg:$(TARGET_COPY_OUT_PRODUCT)/media/wallpapers/merlin_hermes.jpg
 
+
+# HyperOS Stock Camera
+$(call inherit-product-if-exists, vendor/xiaomi/breeze-camera/breeze-camera.mk)
