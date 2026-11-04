@@ -7,4 +7,8 @@
     <!-- Doze: does this device support STATE_DOZE? (false for LCD panels to prevent blinking) -->
     <bool name="doze_display_state_supported">false</bool>
     <bool name="doze_suspend_display_state_supported">false</bool>
+
+    <!-- Package name of a built-in camera app to use to restrict implicit intent resolution
+         when the double-press power gesture and lockscreen camera shortcut is used. -->
+    <string translatable="false" name="config_cameraGesturePackage">org.lineageos.aperture</string>
 </resources>
