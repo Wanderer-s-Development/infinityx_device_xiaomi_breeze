@@ -472,3 +472,18 @@ PRODUCT_COPY_FILES += \
 
 # HyperOS Stock Camera
 $(call inherit-product-if-exists, vendor/xiaomi/breeze-camera/breeze-camera.mk)
+
+# Performance & Responsiveness Optimizations (Make Everything Faster)
+PRODUCT_PRODUCT_PROPERTIES += \
+    dalvik.vm.dex2oat-filter=speed-profile \
+    dalvik.vm.image-dex2oat-filter=speed \
+    pm.dexopt.boot-after-ota=speed-profile \
+    pm.dexopt.install=speed-profile \
+    pm.dexopt.bg-dexopt=speed-profile \
+    ro.surface_flinger.max_frame_buffer_acquired_buffers=3 \
+    debug.sf.latch_unsignaled=1 \
+    ro.vendor.qti.sys.fw.bg_apps_limit=48 \
+    ro.vendor.qti.sys.fw.bservice_enable=true \
+    ro.vendor.qti.sys.fw.bservice_limit=12 \
+    ro.vendor.qti.sys.fw.bservice_age=5000 \
+    persist.sys.performance=1
