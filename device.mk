@@ -229,8 +229,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/usr/keylayout/uinput-fpc.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/uinput-fpc.kl \
     $(LOCAL_PATH)/configs/usr/keylayout/uinput-goodix.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/uinput-goodix.kl
 
-# Recovery Touch Firmware
+# Recovery Touch Firmware & Init
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/init/etc/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc \
+    $(LOCAL_PATH)/init/etc/init.recovery.qcom.rc:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/init.recovery.qcom.rc \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/novatek_ts_fw.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_RECOVERY)/root/vendor/firmware/novatek_ts_mp.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/firmware/novatek_ts_fw.bin \
@@ -246,7 +248,11 @@ PRODUCT_COPY_FILES += \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/focaltech_ts_fw_huaxing.bin \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/lib/firmware/focaltech_mp_fw_huaxin.ini \
     vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/focaltech_ts_fw_huaxing.bin \
-    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/focaltech_mp_fw_huaxin.ini
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_RECOVERY)/root/etc/firmware/focaltech_mp_fw_huaxin.ini \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_fw.bin:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/firmware/novatek_ts_fw.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/novatek_ts_mp.bin:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/firmware/novatek_ts_mp.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_ts_fw_huaxing.bin:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/firmware/focaltech_ts_fw_huaxing.bin \
+    vendor/xiaomi/breeze/proprietary/vendor/firmware/focaltech_mp_fw_huaxin.ini:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/lib/firmware/focaltech_mp_fw_huaxin.ini
 
 # IPACM
 PRODUCT_PACKAGES += \
