@@ -113,8 +113,10 @@ on boot
     # IR
     chown system system /dev/ir_spi
     chmod 0660 /dev/ir_spi
+    restorecon /dev/ir_spi
     symlink /dev/ir_spi /dev/lirc0
     chown system system /dev/lirc0
+    restorecon /dev/lirc0
     
     #For TP
     chown system system /sys/class/touch/touch_dev/palm_sensor
