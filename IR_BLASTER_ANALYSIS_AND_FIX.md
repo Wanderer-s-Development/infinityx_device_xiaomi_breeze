@@ -98,6 +98,11 @@ In Xiaomi's driver, ioctl `0x40046911` is **`IR_SPI_SET_BUF_SIZE`** (pre-allocat
    Upstream HAL called `ioctl(fd, LIRC_SET_SEND_CARRIER, &freq)` (`0x40046913`). The kernel driver rejected anything other than `0x40046911` with `-EINVAL` (`-22`), causing the HAL to abort with `EX_UNSUPPORTED_OPERATION`.
 3. **Buffer Sizing Requirement:**
    If `idata->buffer_size != 0` and did not match the user write byte count, the driver aborted write operations.
+4. **Missing Carrier Modulation in Userspace (The "Flash in camera, but TV doesn't respond" Bug):**
+   - Standard LIRC drivers (`/dev/lirc0`) expect an array of `int32_t` microsecond durations (`[9000, 4500, 560, ...]`) and hardware timers generate the 38 kHz carrier wave.
+   - `/dev/ir_spi` is an SPI character device connected directly to Qualcomm QUPv3 SE6 SPI at a fixed clock of **1,920,000 Hz (1.92 MHz)**.
+   - When userspace writes raw microsecond integers directly to `/dev/ir_spi`, the SPI bus clocks out the 32-bit integer values as raw binary data at 1.92 MHz. For example, a 9000 µs pulse (4 bytes) was transmitted in just 16.6 µs instead of 9,000 µs (over 500x too fast).
+   - The IR diode flashed (detectable under phone cameras), but to TV IR demodulators (e.g., TSOP38238), it was high-frequency RF noise rather than a 38 kHz modulated carrier.
 
 ---
 
@@ -105,8 +110,11 @@ In Xiaomi's driver, ioctl `0x40046911` is **`IR_SPI_SET_BUF_SIZE`** (pre-allocat
 
 ### 5.1 HAL Implementation (`hardware/lineage/interfaces/ir/ConsumerIr.cpp`)
 - Probes `/dev/ir_spi` directly before falling back to `/dev/lirc0`.
-- Pre-sizes the transfer buffer with `IR_SPI_SET_BUF_SIZE` (`0x40046911`) prior to write.
-- Treats carrier ioctls as non-fatal warnings on devices where hardware SPI carrier modulation is preconfigured.
+- Implements `modulatePatternToSpi()` to synthesize exact carrier waves (38 kHz, 36 kHz, etc.) at 1.92 MHz SPI bit clock:
+  - Bit period: $1 / 1,920,000\text{ s} \approx 0.520833\ \mu\text{s}$.
+  - Carrier period for 38 kHz: $26.3158\ \mu\text{s} \approx 50.5\text{ bits}$ per cycle.
+  - Generates industry-standard 33.3% duty cycle (1/3 ON, 2/3 OFF) square wave during PULSE phases and 0-bit silence during SPACE phases.
+- Pre-sizes the transfer buffer with `IR_SPI_SET_BUF_SIZE` (`0x40046911`) matching the modulated SPI byte count prior to write.
 
 ### 5.2 SELinux Policy (`device/lineage/sepolicy/common/vendor/hal_ir_default.te`)
 ```te
