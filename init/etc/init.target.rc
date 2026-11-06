@@ -51,6 +51,8 @@ on fs
     chmod 0771 /mnt/vendor/persist
     restorecon_recursive /mnt/vendor/persist
     mkdir /mnt/vendor/persist/data 0700 system system
+    mkdir /mnt/vendor/persist/camera 0777 system system
+    chmod 0777 /mnt/vendor/persist/camera
     mount ext4 /dev/block/by-name/rescue /mnt/rescue noatime
     chown system system /mnt/rescue
     chmod 0771 /mnt/rescue
@@ -80,6 +82,8 @@ on post-fs-data
     mkdir /data/vendor/.tp/ 0775 system system
     mkdir /data/vendor/thermal 0771 root system
     mkdir /data/vendor/thermal/config 0771 root system
+    mkdir /data/vendor/camera 0777 camera camera
+    chmod 0777 /data/vendor/camera
 
 on early-boot
     start vendor.sensors
