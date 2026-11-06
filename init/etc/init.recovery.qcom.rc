@@ -35,6 +35,10 @@ on early-init
 on init
     write /sys/class/backlight/panel0-backlight/brightness 200
     setprop sys.usb.configfs 1
+    # Allow display to fully initialize before touch input is processed
+    # Prevents wrong layout / too-fast scrolling on first touch event
+    setprop ro.recovery.ui.touch_low_threshold 20
+    setprop ro.recovery.ui.touch_high_threshold 60
 
 on property:ro.boot.usbcontroller=*
     setprop sys.usb.controller ${ro.boot.usbcontroller}
