@@ -21,10 +21,6 @@ LINEAGE_BUILDTYPE := RELEASE
 # GApps build flag (can be overridden by environment)
 WITH_GAPPS ?= true
 
-# Dexpreopt: only precompile boot image + system_server (not apps)
-# Saves ~50-80 MB in ZIP; apps are compiled on first use via JIT
-WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
-
 # Inherit common infinity configurations
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
 
