@@ -127,6 +127,13 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
 
+PRODUCT_VENDOR_PROPERTIES += \
+    vendor.camera.aux.packagelist=com.android.camera,org.lineageos.aperture \
+    persist.vendor.camera.privapp.list=com.android.camera \
+    persist.vendor.camera.mivi.version=1 \
+    vendor.camera.support.mivi=false
+
+
 # Display
 PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@4.0-impl-qti-display \
