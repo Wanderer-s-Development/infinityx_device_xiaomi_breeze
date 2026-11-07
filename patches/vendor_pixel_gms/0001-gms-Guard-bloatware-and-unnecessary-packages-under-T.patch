@@ -1,0 +1,199 @@
+From c7f01f46bd21cf6f06c018e584a922ea7d9d0f7f Mon Sep 17 00:00:00 2001
+From: Wanderer <331453264+nithishlabs08@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 14:43:22 +0000
+Subject: [PATCH] gms: Guard bloatware and unnecessary packages under
+ TARGET_CORE_GAPPS
+
+---
+ common/common-vendor.mk | 82 +++++++++++++++++++++++++----------------
+ common/overlays.mk      |  6 ++-
+ products/gms.mk         |  2 +
+ 3 files changed, 58 insertions(+), 32 deletions(-)
+
+diff --git a/common/common-vendor.mk b/common/common-vendor.mk
+index fc513b9..1b73d33 100644
+--- a/common/common-vendor.mk
++++ b/common/common-vendor.mk
+@@ -5,16 +5,26 @@
+ PRODUCT_SOONG_NAMESPACES += \
+     vendor/pixel/gms/common
+ 
++ifneq ($(TARGET_CORE_GAPPS),true)
+ PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/app/Chrome/Chrome.apk.gz:$(TARGET_COPY_OUT_PRODUCT)/app/Chrome/Chrome.apk.gz \
+     vendor/pixel/gms/common/proprietary/product/app/TrichromeLibrary/TrichromeLibrary.apk.gz:$(TARGET_COPY_OUT_PRODUCT)/app/TrichromeLibrary/TrichromeLibrary.apk.gz \
+-    vendor/pixel/gms/common/proprietary/product/app/WebViewGoogle/WebViewGoogle.apk.gz:$(TARGET_COPY_OUT_PRODUCT)/app/WebViewGoogle/WebViewGoogle.apk.gz \
++    vendor/pixel/gms/common/proprietary/product/app/WebViewGoogle/WebViewGoogle.apk.gz:$(TARGET_COPY_OUT_PRODUCT)/app/WebViewGoogle/WebViewGoogle.apk.gz
++endif
++
++ifneq ($(TARGET_CORE_GAPPS),true)
++PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/etc/default-permissions/default-permissions-com.google.android.apps.pixel.agent.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions-com.google.android.apps.pixel.agent.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/default-permissions/default-permissions-safetyhub.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions-safetyhub.xml \
+-    vendor/pixel/gms/common/proprietary/product/etc/default-permissions/default-permissions.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/permissions/com.google.android.apps.setupwizard.searchselector.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/com.google.android.apps.setupwizard.searchselector.xml \
+-    vendor/pixel/gms/common/proprietary/product/etc/permissions/privapp-permissions-google-p.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-google-p.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/permissions/velvet_app-privapp-permissions.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/velvet_app-privapp-permissions.xml \
++    vendor/pixel/gms/common/proprietary/product/etc/sysconfig/nga.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/nga.xml
++endif
++
++PRODUCT_COPY_FILES += \
++    vendor/pixel/gms/common/proprietary/product/etc/default-permissions/default-permissions.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/default-permissions/default-permissions.xml \
++    vendor/pixel/gms/common/proprietary/product/etc/permissions/com.google.android.dialer.support.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/com.google.android.dialer.support.xml \
++    vendor/pixel/gms/common/proprietary/product/etc/permissions/privapp-permissions-google-p.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-google-p.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/preferred-apps/google.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/preferred-apps/google.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/security/fsverity/gms_fsverity_cert.der:$(TARGET_COPY_OUT_PRODUCT)/etc/security/fsverity/gms_fsverity_cert.der \
+     vendor/pixel/gms/common/proprietary/product/etc/security/fsverity/play_store_fsi_cert.der:$(TARGET_COPY_OUT_PRODUCT)/etc/security/fsverity/play_store_fsi_cert.der \
+@@ -26,7 +36,6 @@ PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/google.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/google.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/google_build.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/google_build.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/nexus.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/nexus.xml \
+-    vendor/pixel/gms/common/proprietary/product/etc/sysconfig/nga.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/nga.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/pixel_experience_2017.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/pixel_experience_2017.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/pixel_experience_2018.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/pixel_experience_2018.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/pixel_experience_2019.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/pixel_experience_2019.xml \
+@@ -49,6 +58,11 @@ PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/preinstalled-packages-product-pixel-2022-and-newer.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/preinstalled-packages-product-pixel-2022-and-newer.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/preinstalled-packages-product-pixel-2023-and-newer.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/preinstalled-packages-product-pixel-2023-and-newer.xml \
+     vendor/pixel/gms/common/proprietary/product/etc/sysconfig/preinstalled-packages-product-pixel-2024-and-newer.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/preinstalled-packages-product-pixel-2024-and-newer.xml \
++    vendor/pixel/gms/common/proprietary/system/etc/permissions/privapp-permissions-google.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-google.xml \
++    vendor/pixel/gms/common/proprietary/system_ext/etc/permissions/privapp-permissions-google-se.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-google-se.xml
++
++ifneq ($(TARGET_CORE_GAPPS),true)
++PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/usr/share/ime/google/d3_lms/ko_2018030706.zip:$(TARGET_COPY_OUT_PRODUCT)/usr/share/ime/google/d3_lms/ko_2018030706.zip \
+     vendor/pixel/gms/common/proprietary/product/usr/share/ime/google/d3_lms/mozc.data:$(TARGET_COPY_OUT_PRODUCT)/usr/share/ime/google/d3_lms/mozc.data \
+     vendor/pixel/gms/common/proprietary/product/usr/share/ime/google/d3_lms/zh_CN_2018030706.zip:$(TARGET_COPY_OUT_PRODUCT)/usr/share/ime/google/d3_lms/zh_CN_2018030706.zip \
+@@ -116,37 +130,23 @@ PRODUCT_COPY_FILES += \
+     vendor/pixel/gms/common/proprietary/product/usr/srec/en-US/pumpkin.mmap:$(TARGET_COPY_OUT_PRODUCT)/usr/srec/en-US/pumpkin.mmap \
+     vendor/pixel/gms/common/proprietary/product/usr/srec/en-US/semantics.pumpkin:$(TARGET_COPY_OUT_PRODUCT)/usr/srec/en-US/semantics.pumpkin \
+     vendor/pixel/gms/common/proprietary/product/usr/srec/en-US/voice_match/MARBLE_speakerid.tflite:$(TARGET_COPY_OUT_PRODUCT)/usr/srec/en-US/voice_match/MARBLE_speakerid.tflite \
+-    vendor/pixel/gms/common/proprietary/product/usr/srec/en-US/voice_match/MARBLE_voice_filter.tflite:$(TARGET_COPY_OUT_PRODUCT)/usr/srec/en-US/voice_match/MARBLE_voice_filter.tflite \
+-    vendor/pixel/gms/common/proprietary/system/etc/permissions/privapp-permissions-google.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-google.xml \
+-    vendor/pixel/gms/common/proprietary/system_ext/etc/permissions/privapp-permissions-google-se.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-google-se.xml
++    vendor/pixel/gms/common/proprietary/product/usr/srec/en-US/voice_match/MARBLE_voice_filter.tflite:$(TARGET_COPY_OUT_PRODUCT)/usr/srec/en-US/voice_match/MARBLE_voice_filter.tflite
++endif
+ 
+ PRODUCT_PACKAGES += \
+     com.google.android.extservices \
+     com.google.android.gmssystem.prodvic \
+     GoogleExtShared \
+-    GooglePrintRecommendationService \
+-    TagGoogle \
+-    CalculatorGooglePrebuilt_85006267 \
+-    Chrome-Stub \
+-    DevicePolicyPrebuilt-v10572820 \
+     GoogleContacts \
+-    GoogleTTS \
+-    LatinIMEGooglePrebuilt \
++    GoogleDialer \
++    PrebuiltBugle \
++    com.google.android.dialer.support \
+     LocationHistoryPrebuilt \
+-    MarkupGoogle_v2 \
+     ModuleMetadataGoogle \
+-    SwitchAccessPrebuilt_1.17.0.877181440 \
+-    TrichromeLibrary-Stub \
+-    WebViewGoogle-Stub \
+-    talkback \
+-    AndroidAutoStubPrebuilt \
+     ConfigUpdater \
+-    DeviceIntelligenceNetworkPrebuiltAstrea \
+-    DevicePersonalizationAiAiPrebuiltPixel2025 \
+     GoogleRestorePrebuilt-v1007163 \
+     PartnerSetupPrebuilt \
+     Phonesky \
+-    PrebuiltDeskClockGoogle_76042511 \
+     PrebuiltGmsCoreVic_AdsDynamite \
+     PrebuiltGmsCoreVic_CronetDynamite \
+     PrebuiltGmsCoreVic_DynamiteLoader \
+@@ -156,19 +156,39 @@ PRODUCT_PACKAGES += \
+     PrebuiltGmsCoreVic_MapsDynamite \
+     PrebuiltGmsCoreVic_MeasurementDynamite \
+     AndroidPlatformServices \
+-    MlkitBarcodeUIPrebuilt \
+-    TfliteDynamitePrebuilt \
+-    VisionBarcodePrebuilt \
++    SetupWizardPrebuilt_versioned \
++    EmergencyInfoGoogleNoUi \
++    GoogleServicesFramework \
++    SetupWizardPixelPrebuilt_versioned
++
++ifneq ($(TARGET_CORE_GAPPS),true)
++PRODUCT_PACKAGES += \
++    GooglePrintRecommendationService \
++    TagGoogle \
++    DevicePolicyPrebuilt-v10572820 \
++    SwitchAccessPrebuilt_1.17.0.877181440 \
++    talkback \
++    AndroidAutoStubPrebuilt \
++    CalculatorGooglePrebuilt_85006267 \
++    Chrome-Stub \
++    GoogleTTS \
++    LatinIMEGooglePrebuilt \
++    MarkupGoogle_v2 \
++    TrichromeLibrary-Stub \
++    WebViewGoogle-Stub \
++    DeviceIntelligenceNetworkPrebuiltAstrea \
++    DevicePersonalizationAiAiPrebuiltPixel2025 \
++    PrebuiltDeskClockGoogle_76042511 \
+     SearchSelectorPrebuilt \
+     SettingsIntelligenceGooglePrebuilt \
+-    SetupWizardPrebuilt_versioned \
+     TurboPrebuilt \
+     Velvet \
+     WellbeingPrebuilt \
+-    EmergencyInfoGoogleNoUi \
+     Flipendo \
+-    GoogleServicesFramework \
+-    SetupWizardPixelPrebuilt_versioned \
+-    TurboAdapter
++    TurboAdapter \
++    MlkitBarcodeUIPrebuilt \
++    TfliteDynamitePrebuilt \
++    VisionBarcodePrebuilt
++endif
+ 
+ include vendor/pixel/gms/common/overlays.mk
+diff --git a/common/overlays.mk b/common/overlays.mk
+index ccdde1f..47563ff 100644
+--- a/common/overlays.mk
++++ b/common/overlays.mk
+@@ -2,7 +2,6 @@ PRODUCT_PACKAGES += \
+     ContactsProviderOverlay_GMS \
+     FrameworkResOverlay_GMS \
+     GoogleConfigOverlay_GMS \
+-    GoogleWebViewOverlay_GMS \
+     PixelConfigOverlay2018_GMS \
+     PixelConfigOverlay2019Midyear_GMS \
+     PixelConfigOverlay2021_GMS \
+@@ -13,3 +12,8 @@ PRODUCT_PACKAGES += \
+     SettingsProviderOverlay_GMS \
+     SystemUIGXOverlay_GMS \
+     SystemUIOverlay_GMS
++
++ifneq ($(TARGET_CORE_GAPPS),true)
++PRODUCT_PACKAGES += \
++    GoogleWebViewOverlay_GMS
++endif
+diff --git a/products/gms.mk b/products/gms.mk
+index 621c835..7914047 100644
+--- a/products/gms.mk
++++ b/products/gms.mk
+@@ -18,11 +18,13 @@
+ TARGET_DOES_NOT_SUPPORT_GOOGLE_BATTERY ?= true
+ 
+ # Include TurboAdapter without Google Battery support
++ifneq ($(TARGET_CORE_GAPPS),true)
+ ifeq ($(TARGET_DOES_NOT_SUPPORT_GOOGLE_BATTERY),true)
+ PRODUCT_PACKAGES += \
+     TurboAdapter_NoBatt \
+     libpowerstatshaldataprovider
+ endif
++endif
+ 
+ # GMS Props
+ PRODUCT_PRODUCT_PROPERTIES += \
+-- 
+2.43.0
+

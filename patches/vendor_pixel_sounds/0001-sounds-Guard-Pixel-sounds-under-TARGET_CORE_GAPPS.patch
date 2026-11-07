@@ -1,0 +1,29 @@
+From 99c23cc986dfd055a1f8857ba91311b65302b030 Mon Sep 17 00:00:00 2001
+From: Wanderer <331453264+nithishlabs08@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 14:43:26 +0000
+Subject: [PATCH] sounds: Guard Pixel sounds under TARGET_CORE_GAPPS
+
+---
+ products/sounds.mk | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/products/sounds.mk b/products/sounds.mk
+index b1e93c0..536f6bb 100644
+--- a/products/sounds.mk
++++ b/products/sounds.mk
+@@ -4,6 +4,7 @@
+ # SPDX-License-Identifier: Apache-2.0
+ #
+ 
++ifneq ($(TARGET_CORE_GAPPS),true)
+ # Inherit from the proprietary version
+ $(call inherit-product, vendor/pixel/sounds/common/common-vendor.mk)
+ 
+@@ -11,3 +12,4 @@ $(call inherit-product, vendor/pixel/sounds/common/common-vendor.mk)
+ PRODUCT_PACKAGES += \
+     FrameworkPixelSounds \
+     SettingsPixelSounds
++endif
+-- 
+2.43.0
+

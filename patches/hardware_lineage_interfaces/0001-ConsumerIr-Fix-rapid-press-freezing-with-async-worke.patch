@@ -1,0 +1,339 @@
+From 33e48d82b8aa01054f4244d29a46711a8ca254cc Mon Sep 17 00:00:00 2001
+From: Wanderer <331453264+nithishlabs08@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 14:45:08 +0000
+Subject: [PATCH] ConsumerIr: Fix rapid press freezing with async worker and
+ boost range with 50% duty cycle
+
+- Implement carrier frequency modulation generating square wave bitstreams into /dev/ir_spi
+- Pad modulated SPI transfers to 4 bytes for Linux kernel __spi_validate() bits_per_word=32
+- Implement asynchronous background worker thread with bounded queue (drops stale
+  un-transmitted jobs when rapid presses occur faster than physical transmission duration)
+- Return immediately from transmit() to prevent blocking system_server's mHalLock
+  and caller application UI thread
+- Maintain persistent open file descriptors for /dev/ir_spi and /dev/lirc0 to
+  prevent QUPv3 clock tearing, ioctl refcount collision (-1), and driver write -EINVAL (-22)
+- Increase carrier duty cycle from 33.3% to 50% to boost optical pulse power by +50%,
+  maximizing fundamental carrier amplitude for room-wide transmission range
+
+Change-Id: I9b00fca9f34478a5227ce517f1654908e1fed74d
+---
+ ir/ConsumerIr.cpp | 214 +++++++++++++++++++++++++++++++++++++++++-----
+ ir/ConsumerIr.h   |  32 +++++++
+ 2 files changed, 225 insertions(+), 21 deletions(-)
+
+diff --git a/ir/ConsumerIr.cpp b/ir/ConsumerIr.cpp
+index 2825647..f7b6040 100644
+--- a/ir/ConsumerIr.cpp
++++ b/ir/ConsumerIr.cpp
+@@ -7,7 +7,11 @@
+ 
+ #include <fcntl.h>
+ #include <linux/lirc.h>
++#include <cmath>
+ #include <string>
++#include <vector>
++#include <sys/ioctl.h>
++#include <unistd.h>
+ 
+ #include <android-base/logging.h>
+ #include <android-base/unique_fd.h>
+@@ -22,7 +26,61 @@ namespace android {
+ namespace hardware {
+ namespace ir {
+ 
+-static const std::string kIrDevice = "/dev/lirc0";
++#define IR_SPI_SET_BUF_SIZE _IOW('i', 0x11, uint32_t)
++static constexpr uint32_t kSpiClockHz = 1920000; // 1.92 MHz on SM4450 QUPv3 SE6
++
++static const std::string kIrSpiDevice = "/dev/ir_spi";
++static const std::string kLircDevice = "/dev/lirc0";
++
++static std::vector<uint8_t> modulatePatternToSpi(int32_t carrierFreqHz,
++                                                const std::vector<int32_t>& pattern,
++                                                size_t entries) {
++    const double bit_period_us = 1000000.0 / static_cast<double>(kSpiClockHz);
++    const double carrier_period_us = 1000000.0 / static_cast<double>(carrierFreqHz);
++    // 50% duty cycle delivers +50% higher optical pulse energy vs 33% duty cycle,
++    // maximizing fundamental carrier amplitude and room-wide transmission range.
++    const double carrier_high_us = carrier_period_us * 0.50;
++
++    std::vector<uint8_t> spi_bytes;
++    uint8_t current_byte = 0;
++    int bit_count = 0;
++
++    for (size_t i = 0; i < entries; ++i) {
++        const bool is_pulse = (i % 2 == 0);
++        const double duration_us = static_cast<double>(pattern[i]);
++        double elapsed_us = 0.0;
++
++        while (elapsed_us < duration_us) {
++            uint8_t bit = 0;
++            if (is_pulse) {
++                double phase = fmod(elapsed_us, carrier_period_us);
++                bit = (phase < carrier_high_us) ? 1 : 0;
++            }
++            current_byte = (current_byte << 1) | bit;
++            bit_count++;
++            if (bit_count == 8) {
++                spi_bytes.push_back(current_byte);
++                current_byte = 0;
++                bit_count = 0;
++            }
++            elapsed_us += bit_period_us;
++        }
++    }
++
++    if (bit_count > 0) {
++        spi_bytes.push_back(static_cast<uint8_t>(current_byte << (8 - bit_count)));
++    }
++
++    // ir-spi driver sets bits_per_word = 32 (4 bytes).
++    // Linux kernel __spi_validate() enforces len % (bits_per_word / 8) == 0.
++    // If not divisible by 4, write fails with error 22 (-EINVAL).
++    // Pad with 0x00 (carrier off) so the transfer is always 4-byte aligned.
++    while (spi_bytes.size() % 4 != 0) {
++        spi_bytes.push_back(0x00);
++    }
++
++    return spi_bytes;
++}
+ 
+ ConsumerIr::ConsumerIr() {
+     auto carrier_freqs = IrProperties::carrier_freqs();
+@@ -41,6 +99,118 @@ ConsumerIr::ConsumerIr() {
+     } else {
+         kRangeVec.push_back({.minHz = 30000, .maxHz = 60000});
+     }
++
++    // Start background worker thread for non-blocking asynchronous transmission
++    mWorkerThread = std::thread(&ConsumerIr::workerLoop, this);
++}
++
++ConsumerIr::~ConsumerIr() {
++    {
++        std::lock_guard<std::mutex> lock(mQueueMutex);
++        mStopWorker = true;
++    }
++    mCv.notify_all();
++
++    if (mWorkerThread.joinable()) {
++        mWorkerThread.join();
++    }
++
++    std::lock_guard<std::mutex> lock(mDevLock);
++    mSpiFd.reset();
++    mLircFd.reset();
++}
++
++int ConsumerIr::getDeviceFd(bool isSpi) {
++    std::lock_guard<std::mutex> lock(mDevLock);
++    if (isSpi) {
++        if (!mSpiFd.ok()) {
++            mSpiFd.reset(open(kIrSpiDevice.c_str(), O_WRONLY | O_CLOEXEC));
++            if (!mSpiFd.ok()) {
++                LOG(ERROR) << "Failed to open " << kIrSpiDevice << ", error: " << strerror(errno);
++                return -1;
++            }
++        }
++        return mSpiFd.get();
++    } else {
++        if (!mLircFd.ok()) {
++            mLircFd.reset(open(kLircDevice.c_str(), O_WRONLY | O_CLOEXEC));
++            if (!mLircFd.ok()) {
++                LOG(ERROR) << "Failed to open " << kLircDevice << ", error: " << strerror(errno);
++                return -1;
++            }
++        }
++        return mLircFd.get();
++    }
++}
++
++void ConsumerIr::resetDeviceFd(bool isSpi) {
++    std::lock_guard<std::mutex> lock(mDevLock);
++    if (isSpi) {
++        mSpiFd.reset();
++    } else {
++        mLircFd.reset();
++    }
++}
++
++void ConsumerIr::workerLoop() {
++    while (true) {
++        IrTxJob job;
++        {
++            std::unique_lock<std::mutex> lock(mQueueMutex);
++            mCv.wait(lock, [this] { return mStopWorker || !mJobQueue.empty(); });
++
++            if (mStopWorker && mJobQueue.empty()) {
++                break;
++            }
++
++            job = std::move(mJobQueue.front());
++            mJobQueue.pop();
++        }
++
++        if (job.isSpi) {
++            int fd = getDeviceFd(true);
++            if (fd < 0) {
++                LOG(ERROR) << "workerLoop: Cannot acquire SPI device FD";
++                continue;
++            }
++
++            uint32_t spi_bytes = static_cast<uint32_t>(job.spiData.size());
++            int rc = ioctl(fd, IR_SPI_SET_BUF_SIZE, &spi_bytes);
++            if (rc < 0) {
++                LOG(ERROR) << "workerLoop: ioctl IR_SPI_SET_BUF_SIZE failed: " << strerror(errno);
++                resetDeviceFd(true);
++                continue;
++            }
++
++            ssize_t written = write(fd, job.spiData.data(), spi_bytes);
++            if (written < 0 || static_cast<size_t>(written) != job.spiData.size()) {
++                LOG(ERROR) << "workerLoop: write SPI failed (" << spi_bytes
++                           << " bytes), written=" << written << ", error: " << errno;
++                resetDeviceFd(true);
++                continue;
++            }
++        } else {
++            int fd = getDeviceFd(false);
++            if (fd < 0) {
++                LOG(ERROR) << "workerLoop: Cannot acquire LIRC device FD";
++                continue;
++            }
++
++            int rc = ioctl(fd, LIRC_SET_SEND_CARRIER, &job.carrierFreqHz);
++            if (rc < 0) {
++                LOG(ERROR) << "workerLoop: set LIRC carrier failed: " << strerror(errno);
++                resetDeviceFd(false);
++                continue;
++            }
++
++            rc = write(fd, job.rawPattern.data(), job.rawPattern.size() * sizeof(int32_t));
++            if (rc < 0) {
++                LOG(ERROR) << "workerLoop: write LIRC pattern failed: " << strerror(errno);
++                resetDeviceFd(false);
++                continue;
++            }
++        }
++    }
+ }
+ 
+ ::ndk::ScopedAStatus ConsumerIr::getCarrierFreqs(std::vector<ConsumerIrFreqRange>* _aidl_return) {
+@@ -62,33 +232,35 @@ ConsumerIr::ConsumerIr() {
+         return ::ndk::ScopedAStatus::fromExceptionCode(EX_UNSUPPORTED_OPERATION);
+     }
+ 
+-    ::android::base::unique_fd fd(open(kIrDevice.c_str(), O_WRONLY));
+-    if (!fd.ok()) {
+-        LOG(ERROR) << "Failed to open " << kIrDevice << ", error: " << strerror(errno);
+-        return ::ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_STATE);
++    // Pattern must end with an on (pulse) period
++    if (entries % 2 == 0) {
++        entries--;
+     }
+ 
+-    int rc = ioctl(fd, LIRC_SET_SEND_CARRIER, &carrierFreqHz);
+-    if (rc < 0) {
+-        LOG(ERROR) << "Failed to set carrier " << carrierFreqHz << ", error: " << errno;
+-        return ::ndk::ScopedAStatus::fromExceptionCode(EX_UNSUPPORTED_OPERATION);
+-    }
++    bool is_spi = (access(kIrSpiDevice.c_str(), F_OK) == 0);
+ 
+-    /*
+-     * Pattern is an alternating series of on and off periods.
+-     * Kernel needs pattern to have an odd size, which means ending with
+-     * an on period. If pattern is even in size, drop the last off period.
+-     */
+-    if (entries % 2 == 0) {
+-        entries--;
++    IrTxJob job;
++    job.isSpi = is_spi;
++    job.carrierFreqHz = carrierFreqHz;
++
++    if (is_spi) {
++        job.spiData = modulatePatternToSpi(carrierFreqHz, pattern, entries);
++    } else {
++        job.rawPattern.assign(pattern.begin(), pattern.begin() + entries);
+     }
+ 
+-    rc = write(fd, pattern.data(), entries * sizeof(int32_t));
+-    if (rc < 0) {
+-        LOG(ERROR) << "Failed to write pattern, " << entries << " entries, error: " << errno;
+-        return ::ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_STATE);
++    {
++        std::lock_guard<std::mutex> lock(mQueueMutex);
++        // Prevent queue backlog lag when user rapidly presses remote buttons:
++        // Keep at most 1 pending transmission waiting behind the active transmission.
++        while (mJobQueue.size() >= 2) {
++            mJobQueue.pop();
++        }
++        mJobQueue.push(std::move(job));
+     }
++    mCv.notify_one();
+ 
++    // Return immediately to Android framework (releases system_server mHalLock and avoids caller UI freeze)
+     return ::ndk::ScopedAStatus::ok();
+ }
+ 
+diff --git a/ir/ConsumerIr.h b/ir/ConsumerIr.h
+index 9c73fc8..1df3405 100644
+--- a/ir/ConsumerIr.h
++++ b/ir/ConsumerIr.h
+@@ -6,15 +6,31 @@
+ #pragma once
+ 
+ #include <aidl/android/hardware/ir/BnConsumerIr.h>
++#include <android-base/unique_fd.h>
++
++#include <condition_variable>
++#include <mutex>
++#include <queue>
++#include <thread>
++#include <vector>
+ 
+ namespace aidl {
+ namespace android {
+ namespace hardware {
+ namespace ir {
+ 
++struct IrTxJob {
++    std::vector<uint8_t> spiData;
++    std::vector<int32_t> rawPattern;
++    int32_t carrierFreqHz;
++    bool isSpi;
++};
++
+ class ConsumerIr : public BnConsumerIr {
+   public:
+     ConsumerIr();
++    ~ConsumerIr() override;
++
+     ::ndk::ScopedAStatus getCarrierFreqs(
+             ::std::vector<::aidl::android::hardware::ir::ConsumerIrFreqRange>* _aidl_return)
+             override;
+@@ -24,6 +40,22 @@ class ConsumerIr : public BnConsumerIr {
+   private:
+     std::vector<ConsumerIrFreqRange> kRangeVec;
+     bool isInRange(int32_t carrierFreqHz);
++
++    // Asynchronous background worker for non-blocking rapid transmissions
++    std::thread mWorkerThread;
++    std::mutex mQueueMutex;
++    std::condition_variable mCv;
++    std::queue<IrTxJob> mJobQueue;
++    bool mStopWorker = false;
++
++    // Persistent file descriptors to prevent QUPv3 clock tearing & -EBUSY races
++    ::android::base::unique_fd mSpiFd;
++    ::android::base::unique_fd mLircFd;
++    std::mutex mDevLock;
++
++    void workerLoop();
++    int getDeviceFd(bool isSpi);
++    void resetDeviceFd(bool isSpi);
+ };
+ 
+ }  // namespace ir
+-- 
+2.43.0
+

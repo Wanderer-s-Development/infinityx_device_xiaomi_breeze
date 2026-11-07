@@ -1,0 +1,30 @@
+From 95f3a1c11061f39e336475f944c4cdbb9ddc0673 Mon Sep 17 00:00:00 2001
+From: Wanderer <331453264+nithishlabs08@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 14:43:30 +0000
+Subject: [PATCH] themepicker: Guard ThemePicker under TARGET_CORE_GAPPS
+
+---
+ products/themepicker.mk | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/products/themepicker.mk b/products/themepicker.mk
+index 1d4e833..f940a5c 100644
+--- a/products/themepicker.mk
++++ b/products/themepicker.mk
+@@ -4,6 +4,7 @@
+ # SPDX-License-Identifier: Apache-2.0
+ #
+ 
++ifneq ($(TARGET_CORE_GAPPS),true)
+ # Inherit from the proprietary version
+ $(call inherit-product, vendor/pixel/themepicker/common/common-vendor.mk)
+ 
+@@ -25,3 +26,5 @@ PRODUCT_COPY_FILES += \
+     vendor/pixel/themepicker/prebuilt/etc/preinstalled-packages-product-themepicker.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/google-preinstalled-packages-product-themepicker.xml \
+     vendor/pixel/themepicker/prebuilt/etc/sysconfig-themepicker.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/sysconfig-themepicker.xml \
+     vendor/pixel/themepicker/prebuilt/etc/privapp-permissions-themepicker-se.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/google-privapp-permissions-themepicker-se.xml
++endif
++
+-- 
+2.43.0
+

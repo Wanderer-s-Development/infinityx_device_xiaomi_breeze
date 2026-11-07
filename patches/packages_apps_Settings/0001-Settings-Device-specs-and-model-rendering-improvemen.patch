@@ -1,0 +1,104 @@
+From b7cd93858eca98c6d806ac9282a5cd9dd7c596f4 Mon Sep 17 00:00:00 2001
+From: wandererdev <wandererdev@serverhive.local>
+Date: Sat, 7 Nov 2026 08:08:35 +0000
+Subject: [PATCH] Settings: Device specs and model rendering improvements
+
+---
+ src/com/android/settings/AboutPhoneData.java  | 14 ++++--
+ .../android/settings/OosAboutPreference.java  | 43 +++++++++++++------
+ 2 files changed, 42 insertions(+), 15 deletions(-)
+
+diff --git a/src/com/android/settings/AboutPhoneData.java b/src/com/android/settings/AboutPhoneData.java
+index 528775f..8b0e89e 100644
+--- a/src/com/android/settings/AboutPhoneData.java
++++ b/src/com/android/settings/AboutPhoneData.java
+@@ -41,15 +41,23 @@ public class AboutPhoneData {
+ 
+     private String detectSoC() {
+         String prop = SystemProperties.get(PROP_SOC);
+-        if (prop != null && !prop.isEmpty()) return prop;
++        if (prop != null && !prop.isEmpty() && !prop.equalsIgnoreCase("Snapdragon") && !prop.equals("Snapdragon®")) {
++            return prop;
++        }
+         prop = SystemProperties.get("ro.soc.model");
+         if (prop != null && !prop.isEmpty()) return prop;
+         prop = SystemProperties.get("ro.board.platform");
+-        if (prop != null && !prop.isEmpty()) return prop;
++        if (prop != null && !prop.isEmpty()) {
++            if ("parrot".equalsIgnoreCase(prop) || "ravelin".equalsIgnoreCase(prop) || "sm4450".equalsIgnoreCase(prop)) {
++                return "Snapdragon® 4 Gen 2 AE";
++            }
++            return prop;
++        }
+         prop = SystemProperties.get("ro.hardware.chipname");
+         if (prop != null && !prop.isEmpty()) return prop;
+         prop = SystemProperties.get("ro.vendor.qti.soc_name");
+-        return (prop != null && !prop.isEmpty()) ? prop : "Unknown";
++        if (prop != null && !prop.isEmpty()) return prop;
++        return "Snapdragon® 4 Gen 2 AE";
+     }
+ 
+     private String detectBattery() {
+diff --git a/src/com/android/settings/OosAboutPreference.java b/src/com/android/settings/OosAboutPreference.java
+index 281d21a..251e023 100644
+--- a/src/com/android/settings/OosAboutPreference.java
++++ b/src/com/android/settings/OosAboutPreference.java
+@@ -197,24 +197,43 @@ public class OosAboutPreference extends BasePreferenceController implements View
+     public class SystemInfoUtils {
+ 
+     	public static void setDeviceName(TextView deviceTextView) {
+-    	    String modelName = SystemProperties.get("ro.product.model");
+     	    String marketName = SystemProperties.get("ro.product.marketname");
++    	    if (TextUtils.isEmpty(marketName)) {
++    	        marketName = SystemProperties.get("ro.product.odm.marketname");
++    	    }
++    	    String modelName = SystemProperties.get("ro.product.model");
++    	    if (TextUtils.isEmpty(modelName) || "breeze".equalsIgnoreCase(modelName)) {
++    	        String odmModel = SystemProperties.get("ro.product.odm.model");
++    	        if (!TextUtils.isEmpty(odmModel)) {
++    	            modelName = odmModel;
++    	        }
++    	    }
+     	    String infinityDevice = SystemProperties.get("ro.infinity.device");
+ 
+     	    SpannableStringBuilder builder = new SpannableStringBuilder();
+-    	    if (!TextUtils.isEmpty(marketName)) {
+-    	        SpannableString marketNameText = new SpannableString(marketName + "\n");
+-    	        marketNameText.setSpan(new AbsoluteSizeSpan(21, true), 0, marketNameText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+-    	        builder.append(marketNameText);
+-    	    } else if (!TextUtils.isEmpty(modelName)) {
+-    	        SpannableString modelNameText = new SpannableString(modelName + "\n");
+-    	        modelNameText.setSpan(new AbsoluteSizeSpan(21, true), 0, modelNameText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+-    	        builder.append(modelNameText);
++    	    String mainTitle = !TextUtils.isEmpty(marketName) ? marketName : modelName;
++    	    if (!TextUtils.isEmpty(mainTitle)) {
++    	        SpannableString titleText = new SpannableString(mainTitle + "\n");
++    	        titleText.setSpan(new AbsoluteSizeSpan(21, true), 0, titleText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
++    	        builder.append(titleText);
++    	    }
++
++    	    StringBuilder subText = new StringBuilder();
++    	    if (!TextUtils.isEmpty(marketName) && !TextUtils.isEmpty(modelName) && !modelName.equalsIgnoreCase(marketName)) {
++    	        subText.append(modelName);
+     	    }
+     	    if (!TextUtils.isEmpty(infinityDevice)) {
+-    	        SpannableString infinityDeviceText = new SpannableString("(" + infinityDevice + ")");
+-    	        infinityDeviceText.setSpan(new AbsoluteSizeSpan(15, true), 0, infinityDeviceText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+-    	        builder.append(infinityDeviceText);
++    	        if (subText.length() > 0) {
++    	            subText.append(" (").append(infinityDevice).append(")");
++    	        } else {
++    	            subText.append("(").append(infinityDevice).append(")");
++    	        }
++    	    }
++
++    	    if (subText.length() > 0) {
++    	        SpannableString subSpannable = new SpannableString(subText.toString());
++    	        subSpannable.setSpan(new AbsoluteSizeSpan(15, true), 0, subSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
++    	        builder.append(subSpannable);
+     	    }
+     	    deviceTextView.setText(builder);
+     	}
+-- 
+2.43.0
+

@@ -1,0 +1,260 @@
+From 99718f30a38b56605cdb58f98818b733637d90b8 Mon Sep 17 00:00:00 2001
+From: wandererdev <wandererdev@serverhive.local>
+Date: Sat, 7 Nov 2026 08:08:53 +0000
+Subject: [PATCH] SystemUI: QS Wi-Fi and Mobile Data tile dialog configuration
+
+---
+ core/java/android/provider/Settings.java      | 12 ++++++++++
+ .../com/android/systemui/qs/tiles/WifiTile.kt |  5 ++--
+ .../InternetDetailsContentController.java     |  6 ++---
+ .../dialog/InternetDetailsContentManager.kt   |  9 +++----
+ .../dialog/InternetDialogDelegateLegacy.java  | 24 +++++++++++++++----
+ .../MobileDataTileUserActionInteractor.kt     |  9 +++++++
+ .../WifiTileUserActionInteractor.kt           | 19 +++++++++++++++
+ 7 files changed, 69 insertions(+), 15 deletions(-)
+
+diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
+index 886dbb41d..4de9b8f70 100644
+--- a/core/java/android/provider/Settings.java
++++ b/core/java/android/provider/Settings.java
+@@ -7374,6 +7374,18 @@ public final class Settings {
+         */
+         public static final String QS_BT_SHOW_DIALOG = "qs_bt_show_dialog";
+ 
++        /**
++         * Whether to show Wi-Fi dialog or toggle Wi-Fi state on tapping Wi-Fi tile
++         * @hide
++         */
++        public static final String QS_WIFI_SHOW_DIALOG = "qs_wifi_show_dialog";
++
++        /**
++         * Whether to show mobile data dialog or toggle mobile data state on tapping mobile data tile
++         * @hide
++         */
++        public static final String QS_DATA_SHOW_DIALOG = "qs_data_show_dialog";
++
+         /**
+          * Whether to show the carrier name on the lockscreen
+          * @hide
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.kt b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.kt
+index 6798ff55e..3404c6cd7 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.kt
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.kt
+@@ -99,12 +99,11 @@ constructor(
+     }
+ 
+     override fun handleClick(expandable: Expandable?) {
+-        userActionInteractor.handleSecondaryClick(expandable)
++        lifecycle.coroutineScope.launch { userActionInteractor.handleClick(expandable) }
+     }
+ 
+     override fun handleSecondaryClick(expandable: Expandable?) {
+-        // Disabled
+-        handleClick(expandable)
++        userActionInteractor.handleSecondaryClick(expandable)
+     }
+ 
+     override fun getLongClickIntent(): Intent = userActionInteractor.longClickIntent
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentController.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentController.java
+index 93ef93ef8..02404c1c7 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentController.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentController.java
+@@ -531,12 +531,12 @@ public class InternetDetailsContentController implements AccessPointController.A
+     }
+ 
+     CharSequence getDialogTitleText(boolean canConfigMobileData) {
+-        if (isAirplaneModeEnabled()) {
+-            return mContext.getText(R.string.airplane_mode);
+-        }
+         if (!canConfigMobileData) {
+             return mContext.getText(R.string.quick_settings_wifi_label);
+         }
++        if (isAirplaneModeEnabled()) {
++            return mContext.getText(R.string.airplane_mode);
++        }
+         return mContext.getText(R.string.quick_settings_internet_label);
+     }
+ 
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentManager.kt b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentManager.kt
+index eeb795361..0a0eb9e8b 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentManager.kt
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDetailsContentManager.kt
+@@ -738,7 +738,7 @@ constructor(
+ 
+     @MainThread
+     private fun updateEthernetUI(internetContent: InternetContent) {
+-        ethernetLayout.visibility = if (internetContent.hasEthernet) View.VISIBLE else View.GONE
++        ethernetLayout.visibility = if (canConfigMobileData && internetContent.hasEthernet) View.VISIBLE else View.GONE
+     }
+ 
+     private fun updateWifiUI(internetContent: InternetContent) {
+@@ -771,8 +771,9 @@ constructor(
+         }
+ 
+         if (
+-            !internetContent.hasActiveSubIdOnDds &&
+-                (!internetContent.isWifiEnabled || !internetContent.isCarrierNetworkActive)
++            (!internetContent.hasActiveSubIdOnDds &&
++                (!internetContent.isWifiEnabled || !internetContent.isCarrierNetworkActive))
++                || !canConfigMobileData
+         ) {
+             mobileNetworkLayout.visibility = View.GONE
+             secondaryMobileNetworkLayout?.visibility = View.GONE
+@@ -992,7 +993,7 @@ constructor(
+     @MainThread
+     private fun updateButtonsLayout(internetContent: InternetContent) {
+         airplaneModeButton.visibility =
+-            if (internetContent.isAirplaneModeEnabled) View.VISIBLE else View.GONE
++            if (canConfigMobileData && internetContent.isAirplaneModeEnabled) View.VISIBLE else View.GONE
+ 
+         val apmVisible = airplaneModeButton.isVisible
+         val shareVisible = shareWifiButton.isVisible
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDialogDelegateLegacy.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDialogDelegateLegacy.java
+index fd47f95b1..9d4c03534 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDialogDelegateLegacy.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/dialog/InternetDialogDelegateLegacy.java
+@@ -367,8 +367,14 @@ public class InternetDialogDelegateLegacy implements
+         setHotspotLayout();
+         mTurnWifiOnLayout.setBackground(null);
+         mAirplaneModeButton.setVisibility(
+-                mInternetDetailsContentController.isAirplaneModeEnabled() ? View.VISIBLE
+-                        : View.GONE);
++                (mCanConfigMobileData && mInternetDetailsContentController.isAirplaneModeEnabled())
++                        ? View.VISIBLE : View.GONE);
++        if (!mCanConfigMobileData) {
++            mMobileNetworkLayout.setVisibility(View.GONE);
++            mFivegLayout.setVisibility(View.GONE);
++            mMobileConnectedSpace.setVisibility(View.GONE);
++            mEthernetLayout.setVisibility(View.GONE);
++        }
+         mWifiRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+         mWifiRecyclerView.setAdapter(mAdapter);
+ 
+@@ -460,10 +466,12 @@ public class InternetDialogDelegateLegacy implements
+             setProgressBarVisible(false);
+         }
+         mAirplaneModeButton.setVisibility(
+-                internetContent.mIsAirplaneModeEnabled ? View.VISIBLE : View.GONE);
++                (mCanConfigMobileData && internetContent.mIsAirplaneModeEnabled)
++                        ? View.VISIBLE : View.GONE);
+ 
+         updateEthernet(internetContent);
+         setMobileDataLayout(internetContent);
++        setHotspotLayout();
+ 
+         if (!mCanConfigWifi) {
+             return;
+@@ -610,7 +618,7 @@ public class InternetDialogDelegateLegacy implements
+     @MainThread
+     private void updateEthernet(InternetContent internetContent) {
+         mEthernetLayout.setVisibility(
+-                internetContent.mHasEthernet ? View.VISIBLE : View.GONE);
++                (mCanConfigMobileData && internetContent.mHasEthernet) ? View.VISIBLE : View.GONE);
+     }
+ 
+     private void setMobileDataLayout(InternetContent internetContent) {
+@@ -641,6 +649,12 @@ public class InternetDialogDelegateLegacy implements
+             if (mSecondaryMobileNetworkLayout != null) {
+                 mSecondaryMobileNetworkLayout.setVisibility(View.GONE);
+             }
++            if (mFivegLayout != null) {
++                mFivegLayout.setVisibility(View.GONE);
++            }
++            if (mMobileConnectedSpace != null) {
++                mMobileConnectedSpace.setVisibility(View.GONE);
++            }
+         } else {
+             mMobileNetworkLayout.setVisibility(View.VISIBLE);
+             if (internetContent.mCurrentSatelliteState > SATELLITE_NOT_STARTED) {
+@@ -813,7 +827,7 @@ public class InternetDialogDelegateLegacy implements
+     @MainThread
+     private void updateFivegLayout(Context context, InternetContent internetContent,
+             boolean isNetworkConnected, boolean isDdsSecondaryVisual) {
+-        if (!internetContent.mIsFivegSupported) {
++        if (!internetContent.mIsFivegSupported || !mCanConfigMobileData) {
+             mFivegLayout.setVisibility(View.GONE);
+             return;
+         }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/cell/domain/interactor/MobileDataTileUserActionInteractor.kt b/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/cell/domain/interactor/MobileDataTileUserActionInteractor.kt
+index 8ec561f3e..5674ba51f 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/cell/domain/interactor/MobileDataTileUserActionInteractor.kt
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/cell/domain/interactor/MobileDataTileUserActionInteractor.kt
+@@ -16,21 +16,30 @@
+ 
+ package com.android.systemui.qs.tiles.impl.cell.domain.interactor
+ 
++import android.content.Context
+ import android.content.Intent
++import android.os.UserHandle
+ import android.provider.Settings
+ import com.android.systemui.animation.Expandable
++import com.android.systemui.dagger.qualifiers.Main
+ import com.android.systemui.qs.tiles.base.domain.actions.QSTileIntentUserInputHandler
+ import com.android.systemui.qs.tiles.base.domain.interactor.QSTileUserActionInteractor
+ import com.android.systemui.qs.tiles.base.domain.model.QSTileInput
+ import com.android.systemui.qs.tiles.base.shared.model.QSTileUserAction
++import com.android.systemui.qs.tiles.dialog.InternetDialogManager
+ import com.android.systemui.qs.tiles.impl.cell.domain.model.MobileDataTileModel
+ import com.android.systemui.statusbar.pipeline.mobile.data.repository.MobileConnectionRepository
+ import com.android.systemui.statusbar.pipeline.mobile.data.repository.MobileConnectionsRepository
+ import javax.inject.Inject
++import kotlin.coroutines.CoroutineContext
++import kotlinx.coroutines.withContext
+ 
+ class MobileDataTileUserActionInteractor
+ @Inject
+ constructor(
++    private val context: Context,
++    @Main private val mainContext: CoroutineContext,
++    private val internetDialogManager: InternetDialogManager,
+     private val mobileConnectionsRepository: MobileConnectionsRepository,
+     private val qsTileIntentUserActionHandler: QSTileIntentUserInputHandler,
+ ) : QSTileUserActionInteractor<MobileDataTileModel> {
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/wifi/domain/interactor/WifiTileUserActionInteractor.kt b/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/wifi/domain/interactor/WifiTileUserActionInteractor.kt
+index 96039b07c..cddfe4c70 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/wifi/domain/interactor/WifiTileUserActionInteractor.kt
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/impl/wifi/domain/interactor/WifiTileUserActionInteractor.kt
+@@ -16,7 +16,9 @@
+ 
+ package com.android.systemui.qs.tiles.impl.wifi.domain.interactor
+ 
++import android.content.Context
+ import android.content.Intent
++import android.os.UserHandle
+ import android.provider.Settings
+ import com.android.systemui.animation.Expandable
+ import com.android.systemui.dagger.qualifiers.Main
+@@ -37,6 +39,7 @@ import kotlinx.coroutines.withContext
+ class WifiTileUserActionInteractor
+ @Inject
+ constructor(
++    private val context: Context,
+     @Main private val mainContext: CoroutineContext,
+     private val internetDialogManager: InternetDialogManager,
+     private val accessPointController: AccessPointController,
+@@ -61,6 +64,22 @@ constructor(
+         }
+ 
+     suspend fun handleClick(expandable: Expandable?) {
++        val showDialog =
++            Settings.System.getIntForUser(
++                context.contentResolver,
++                Settings.System.QS_WIFI_SHOW_DIALOG,
++                0,
++                UserHandle.USER_CURRENT,
++            ) != 0
++
++        if (showDialog) {
++            showDialog(expandable)
++        } else {
++            handleSecondaryClick(expandable)
++        }
++    }
++
++    suspend fun showDialog(expandable: Expandable?) {
+         withContext(mainContext) {
+             internetDialogManager.create(
+                 aboveStatusBar = true,
+-- 
+2.43.0
+

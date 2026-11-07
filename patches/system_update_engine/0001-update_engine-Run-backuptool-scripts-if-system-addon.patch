@@ -1,0 +1,26 @@
+From 26f1c59da456640343e9616883fbe095510d7358 Mon Sep 17 00:00:00 2001
+From: wandererdev <wandererdev@serverhive.local>
+Date: Sat, 7 Nov 2026 08:06:32 +0000
+Subject: [PATCH] update_engine: Run backuptool scripts if /system/addon.d
+ exists
+
+---
+ payload_consumer/postinstall_runner_action.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/payload_consumer/postinstall_runner_action.cc b/payload_consumer/postinstall_runner_action.cc
+index 83969f6..c8ee50a 100644
+--- a/payload_consumer/postinstall_runner_action.cc
++++ b/payload_consumer/postinstall_runner_action.cc
+@@ -218,7 +218,7 @@ bool PostinstallRunnerAction::MountPartition(
+ 
+   LOG(INFO) << source_path << " has been mounted R/W " << mount_count << " times.";
+ 
+-  if (mount_count > 0) {
++  if (mount_count > 0 || utils::FileExists("/system/addon.d")) {
+     if (!utils::SetBlockDeviceReadOnly(mountable_device, false)) {
+       LOG(ERROR) << "Error marking the device " << mountable_device << " writeable.";
+       return false;
+-- 
+2.43.0
+

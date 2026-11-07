@@ -1,0 +1,63 @@
+From 9700f9082ff1fc9bfcd81d773fbdf5094d2a9d98 Mon Sep 17 00:00:00 2001
+From: Wanderer <331453264+nithishlabs08@users.noreply.github.com>
+Date: Sat, 7 Nov 2026 14:43:40 +0000
+Subject: [PATCH] soong: Configure SRA custom ninja accelerator
+
+---
+ ui/build/config.go | 8 +++++++-
+ ui/build/rbe.go    | 6 +++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/ui/build/config.go b/ui/build/config.go
+index 38da050..7aceb6b 100644
+--- a/ui/build/config.go
++++ b/ui/build/config.go
+@@ -2030,7 +2030,13 @@ func (c *configImpl) KatiBin() string {
+ 	return c.PrebuiltBuildTool(binName)
+ }
+ 
+-func (c *configImpl) NinjaBin() string {
++func (c *configImpl) NinjaBin() string {/* SRA custom ninja begin */
++	if customNinja, ok := c.environ.Get("CUSTOM_NINJA_BIN"); ok && customNinja != "" {
++		return customNinja
++	} else if !ok {
++		return "/opt/ninja"
++	}
++/* SRA custom ninja end */
+ 	binName := "ninja"
+ 	if c.UseABFS() {
+ 		binName = "ninjago"
+diff --git a/ui/build/rbe.go b/ui/build/rbe.go
+index b3d95c4..6398af8 100644
+--- a/ui/build/rbe.go
++++ b/ui/build/rbe.go
+@@ -256,7 +256,7 @@ func startRBEproxy(ctx Context, config Config) {
+ 	e := ctx.BeginTrace(metrics.RunSetupTool, "rbe_bootstrap")
+ 	defer e.End()
+ 
+-	ctx.Status.Status("Starting rbe...")
++	ctx.Status.Status("Starting ninja...")
+ 	executable := config.SisoBin()
+ 	args := []string{
+ 		"proxy",
+@@ -330,7 +330,7 @@ func startReproxy(ctx Context, config Config) {
+ 	e := ctx.BeginTrace(metrics.RunSetupTool, "rbe_bootstrap")
+ 	defer e.End()
+ 
+-	ctx.Status.Status("Starting rbe...")
++	ctx.Status.Status("Starting ninja...")
+ 	cmd := Command(ctx, config, e, "startReproxy bootstrap", rbeCommand(ctx, config, bootstrapCmd))
+ 
+ 	if output, err := cmd.CombinedOutput(); err != nil {
+@@ -347,7 +347,7 @@ func stopRBE(ctx Context, config Config) {
+ 		cmd := Command(ctx, config, nil, "stopRBE bootstrap", rbeCommand(ctx, config, bootstrapCmd), "-shutdown")
+ 		output, err = cmd.CombinedOutput()
+ 		if err != nil {
+-			ctx.Fatalf("rbe bootstrap with shutdown failed with: %v\n%s\n", err, output)
++			ctx.Fatalf("soong bootstrap with shutdown failed with: %v\n%s\n", err, output)
+ 		}
+ 	}
+ 
+-- 
+2.43.0
+
