@@ -20,6 +20,18 @@ LINEAGE_BUILDTYPE := RELEASE
 
 # GApps build flag (can be overridden by environment)
 WITH_GAPPS ?= true
+TARGET_CORE_GAPPS := true
+
+# Ensure AOSP replacement packages are bundled for Core GApps profile
+PRODUCT_PACKAGES += \
+    DeskClock \
+    ExactCalculator \
+    LatinIME \
+    libjni_latinimegoogle \
+    Canvas \
+    ThemePicker \
+    WallpaperPicker2 \
+    Jelly
 
 # Inherit common infinity configurations
 $(call inherit-product, vendor/infinity/config/common_full_phone.mk)
@@ -48,10 +60,10 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 # GMS
 PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 
-# Device Specs & Quick Settings
+# Device Specs & Quick Settings (LineageOS QS Defaults)
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.infinity.maintainer=Wanderer \
     ro.infinity.device=breeze \
     persist.sys.infinity_revamped_qs=0 \
-    persist.sys.qs_bt_show_dialog=1 \
-    persist.sys.qs_data_show_dialog=1
+    persist.sys.qs_bt_show_dialog=0 \
+    persist.sys.qs_data_show_dialog=0
