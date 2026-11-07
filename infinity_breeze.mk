@@ -67,3 +67,15 @@ PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.infinity_revamped_qs=0 \
     persist.sys.qs_bt_show_dialog=0 \
     persist.sys.qs_data_show_dialog=0
+
+# Strip unwanted accessibility, enterprise, auto, and sounds bloat
+PRODUCT_PACKAGES := $(filter-out \
+    AndroidAutoStubPrebuilt \
+    talkback \
+    SwitchAccessPrebuilt_1.17.0.877181440 \
+    DevicePolicyPrebuilt-v10572820 \
+    GooglePrintRecommendationService \
+    TagGoogle \
+    SoundPickerPrebuilt_33000242 \
+    FrameworkPixelSounds \
+    SettingsPixelSounds,$(PRODUCT_PACKAGES))
