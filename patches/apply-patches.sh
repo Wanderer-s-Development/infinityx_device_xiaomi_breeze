@@ -8,7 +8,12 @@
 
 set -e
 
-PATCHES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+if [[ "$(basename "${SCRIPT_DIR}")" == "patches" ]]; then
+    PATCHES_DIR="${SCRIPT_DIR}"
+else
+    PATCHES_DIR="${SCRIPT_DIR}/patches"
+fi
 ANDROID_BUILD_TOP="$(cd "${PATCHES_DIR}/../../../.." && pwd)"
 
 echo "=========================================================="
@@ -18,7 +23,6 @@ echo " Patches Dir: ${PATCHES_DIR}"
 echo "=========================================================="
 
 declare -A PATCH_MAP=(
-    ["build_soong"]="build/soong"
     ["frameworks_base"]="frameworks/base"
     ["hardware_lineage_interfaces"]="hardware/lineage/interfaces"
     ["packages_apps_Settings"]="packages/apps/Settings"
