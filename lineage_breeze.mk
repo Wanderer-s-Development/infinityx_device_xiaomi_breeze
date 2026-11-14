@@ -30,7 +30,7 @@ PRODUCT_PACKAGES += \
     ThemePicker \
     WallpaperPicker2 \
     Jelly \
-    Gallery2
+    Glimpse
 
 # Include SetupWizard for GApps
 ifeq ($(WITH_GAPPS),true)
