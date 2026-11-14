@@ -80,3 +80,9 @@ PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.qs_bt_show_dialog=1 \
     persist.sys.qs_data_show_dialog=1
+
+# Security, Privacy & Stealth Defaults
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.sys.pi_spoof=1 \
+    persist.sys.keystore_spoof=1 \
+    persist.sys.bank_stealth=1
