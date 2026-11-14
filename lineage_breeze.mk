@@ -46,6 +46,9 @@ endif
 # Inherit common lineage configurations
 $(call inherit-product-if-exists, vendor/lineage/config/common_full_phone.mk)
 
+# Inherit custom release signing keys
+$(call inherit-product-if-exists, vendor/wanderer-priv/keys/keys.mk)
+
 # Inherit device configurations
 $(call inherit-product, device/xiaomi/breeze/device.mk)
 
