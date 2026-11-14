@@ -37,6 +37,7 @@
 #include <android/hardware/health/2.1/IHealthInfoCallback.h>
 #include <hidl/HidlTransportSupport.h>
 #include <thread>
+#include <mutex>
 #include <log_util.h>
 
 using android::hardware::interfacesEqual;
