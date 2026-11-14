@@ -41,8 +41,15 @@ $(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
 endif
 endif
 
+# De-bloat: Exclude AudioFX and Twelve (Music)
+TARGET_EXCLUDES_AUDIOFX := true
+TARGET_EXCLUDES_TWELVE := true
+
 # Inherit common lineage configurations
 $(call inherit-product-if-exists, vendor/lineage/config/common_full_phone.mk)
+
+# Filter out Twelve music player
+PRODUCT_PACKAGES := $(filter-out Twelve AudioFX,$(PRODUCT_PACKAGES))
 
 # Inherit custom release signing keys
 $(call inherit-product-if-exists, vendor/wanderer-priv/keys/keys.mk)
