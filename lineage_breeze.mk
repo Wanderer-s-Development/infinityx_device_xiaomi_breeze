@@ -26,21 +26,19 @@ PRODUCT_PACKAGES += \
     DeskClock \
     ExactCalculator \
     LatinIME \
-    libjni_latinimegoogle \
     ThemePicker \
     WallpaperPicker2 \
     Jelly \
     Glimpse
 
-# Include SetupWizard for GApps
-ifeq ($(WITH_GAPPS),true)
-PRODUCT_PACKAGES += \
-    SetupWizard
-endif
-
 # Inherit MindTheGapps configurations if present
 ifeq ($(WITH_GAPPS),true)
+ifneq ($(wildcard vendor/gapps/arm64/arm64-vendor.mk),)
+PRODUCT_PACKAGES += \
+    SetupWizard \
+    libjni_latinimegoogle
 $(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
+endif
 endif
 
 # Inherit common lineage configurations
@@ -75,3 +73,9 @@ PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.qs_bt_show_dialog=1 \
     persist.sys.qs_data_show_dialog=1
+
+# WandererOS Identity & Display Branding
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.wanderer.version=1.0 \
+    ro.wanderer.device=breeze \
+    ro.lineage.display.version=WandererOS-1.0-RELEASE-breeze
