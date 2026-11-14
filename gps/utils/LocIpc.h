@@ -91,48 +91,6 @@ public:
     inline const unordered_set<int>& getServicesToWatch() { return mServicesToWatch; }
 };
 
-/* this is only when client needs to implement Sender / Recver that are not already provided by
-   the factor methods prvoided by LocIpc. */
-
-class LocIpcSender {
-protected:
-    LocIpcSender() = default;
-    virtual bool isOperable() const = 0;
-    virtual ssize_t send(const uint8_t data[], uint32_t length, int32_t msgId) const = 0;
-public:
-    virtual ~LocIpcSender() = default;
-    inline bool isSendable() const { return isOperable(); }
-    inline bool sendData(const uint8_t data[], uint32_t length, int32_t msgId) const {
-        return isSendable() && (send(data, length, msgId) > 0);
-    }
-    virtual unique_ptr<LocIpcRecver> getRecver(const shared_ptr<ILocIpcListener>& listener __unused) {
-        return nullptr;
-    }
-    inline virtual bool copyDestAddrFrom(const LocIpcSender& otherSender __unused) { return true; }
-};
-
-class LocIpcRecver {
-    LocIpcSender& mIpcSender;
-protected:
-    const shared_ptr<ILocIpcListener> mDataCb;
-    inline LocIpcRecver(const shared_ptr<ILocIpcListener>& listener, LocIpcSender& sender) :
-            mIpcSender(sender), mDataCb(listener) {}
-    LocIpcRecver(LocIpcRecver const& recver) = delete;
-    LocIpcRecver& operator=(LocIpcRecver const& recver) = delete;
-    virtual ssize_t recv() const = 0;
-public:
-    virtual ~LocIpcRecver() = default;
-    inline bool recvData() const { return isRecvable() && (recv() > 0); }
-    inline bool isRecvable() const { return mDataCb != nullptr && mIpcSender.isSendable(); }
-    virtual void onListenerReady() { if (mDataCb != nullptr) mDataCb->onListenerReady(); }
-    inline virtual unique_ptr<LocIpcSender> getLastSender() const {
-        return nullptr;
-    }
-    virtual void abort() const = 0;
-    virtual const char* getName() const = 0;
-};
-
-
 class LocIpc {
 public:
     inline LocIpc() = default;
@@ -200,6 +158,47 @@ private:
 
 private:
     LocThread mThread;
+};
+
+/* this is only when client needs to implement Sender / Recver that are not already provided by
+   the factor methods prvoided by LocIpc. */
+
+class LocIpcSender {
+protected:
+    LocIpcSender() = default;
+    virtual bool isOperable() const = 0;
+    virtual ssize_t send(const uint8_t data[], uint32_t length, int32_t msgId) const = 0;
+public:
+    virtual ~LocIpcSender() = default;
+    inline bool isSendable() const { return isOperable(); }
+    inline bool sendData(const uint8_t data[], uint32_t length, int32_t msgId) const {
+        return isSendable() && (send(data, length, msgId) > 0);
+    }
+    virtual unique_ptr<LocIpcRecver> getRecver(const shared_ptr<ILocIpcListener>& listener __unused) {
+        return nullptr;
+    }
+    inline virtual bool copyDestAddrFrom(const LocIpcSender& otherSender __unused) { return true; }
+};
+
+class LocIpcRecver {
+    LocIpcSender& mIpcSender;
+protected:
+    const shared_ptr<ILocIpcListener> mDataCb;
+    inline LocIpcRecver(const shared_ptr<ILocIpcListener>& listener, LocIpcSender& sender) :
+            mIpcSender(sender), mDataCb(listener) {}
+    LocIpcRecver(LocIpcRecver const& recver) = delete;
+    LocIpcRecver& operator=(LocIpcRecver const& recver) = delete;
+    virtual ssize_t recv() const = 0;
+public:
+    virtual ~LocIpcRecver() = default;
+    inline bool recvData() const { return isRecvable() && (recv() > 0); }
+    inline bool isRecvable() const { return mDataCb != nullptr && mIpcSender.isSendable(); }
+    virtual void onListenerReady() { if (mDataCb != nullptr) mDataCb->onListenerReady(); }
+    inline virtual unique_ptr<LocIpcSender> getLastSender() const {
+        return nullptr;
+    }
+    virtual void abort() const = 0;
+    virtual const char* getName() const = 0;
 };
 
 class Sock {
