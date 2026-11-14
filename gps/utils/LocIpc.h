@@ -105,9 +105,7 @@ public:
     inline bool sendData(const uint8_t data[], uint32_t length, int32_t msgId) const {
         return isSendable() && (send(data, length, msgId) > 0);
     }
-    virtual unique_ptr<LocIpcRecver> getRecver(const shared_ptr<ILocIpcListener>& listener __unused) {
-        return nullptr;
-    }
+    virtual unique_ptr<LocIpcRecver> getRecver(const shared_ptr<ILocIpcListener>& listener __unused);
     inline virtual bool copyDestAddrFrom(const LocIpcSender& otherSender __unused) { return true; }
 };
 
@@ -131,6 +129,10 @@ public:
     virtual void abort() const = 0;
     virtual const char* getName() const = 0;
 };
+
+inline unique_ptr<LocIpcRecver> LocIpcSender::getRecver(const shared_ptr<ILocIpcListener>& listener __unused) {
+    return nullptr;
+}
 
 
 class LocIpc {
