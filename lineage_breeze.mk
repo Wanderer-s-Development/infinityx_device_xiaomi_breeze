@@ -73,9 +73,3 @@ PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.sys.qs_bt_show_dialog=1 \
     persist.sys.qs_data_show_dialog=1
-
-# WandererOS Identity & Display Branding
-PRODUCT_PRODUCT_PROPERTIES += \
-    ro.wanderer.version=1.0 \
-    ro.wanderer.device=breeze \
-    ro.lineage.display.version=WandererOS-1.0-RELEASE-breeze
